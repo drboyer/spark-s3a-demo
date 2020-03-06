@@ -1,14 +1,14 @@
-# spark-s3-demo
+# spark-s3a-demo
 
-⚠️ _This application does not currently work successfully, it was created for debugging/help purposes. If you have an idea what's wrong, please feel free to submit an issue/PR or contact me. I'd be most grateful!_ 💛
+⚠️ _The docker images/configuration provided here are for demonstration purposes only. They have not been vetted for production use._
 
-This repo is a proof of concept that runs [Spark](https://spark.apache.org ) within a Docker container where it can interface with S3.
+This repo is a proof of concept [Spark](https://spark.apache.org ) distribution within a Docker container that can interface with S3 (or S3-compatible filesystems using S3A).
 
 It uses
 
 * Ubuntu 18.04 base image with OpenJDK 8 and Python 3.6
 * Spark 2.4.5
-* Hadoop 2.7.3 (which I believe is the version the Spark distribution I used was built with)
+* Hadoop 3.1.3
 
 ## Notes
 
