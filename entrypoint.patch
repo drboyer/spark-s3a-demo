@@ -1,0 +1,24 @@
+--- entrypoint.sh	2020-03-31 15:18:16.000000000 -0400
++++ entrypoint.sh	2020-03-31 15:20:00.000000000 -0400
+@@ -83,6 +83,12 @@
+     export PYSPARK_DRIVER_PYTHON="python3"
+ fi
+ 
++# If HADOOP_HOME is set and SPARK_DIST_CLASSPATH is not set, set it here so Hadoop jars are available to the executor.
++# It does not set SPARK_DIST_CLASSPATH if already set, to avoid overriding customizations of this value from elsewhere e.g. Docker/K8s.
++if [ -n ${HADOOP_HOME}  ] && [ -z ${SPARK_DIST_CLASSPATH}  ]; then
++  export SPARK_DIST_CLASSPATH=$($HADOOP_HOME/bin/hadoop classpath)
++fi
++
+ case "$SPARK_K8S_CMD" in
+   driver)
+     CMD=(
+@@ -114,7 +120,7 @@
+       "${SPARK_EXECUTOR_JAVA_OPTS[@]}"
+       -Xms$SPARK_EXECUTOR_MEMORY
+       -Xmx$SPARK_EXECUTOR_MEMORY
+-      -cp "$SPARK_CLASSPATH"
++      -cp "$SPARK_CLASSPATH:$SPARK_DIST_CLASSPATH"
+       org.apache.spark.executor.CoarseGrainedExecutorBackend
+       --driver-url $SPARK_DRIVER_URL
+       --executor-id $SPARK_EXECUTOR_ID

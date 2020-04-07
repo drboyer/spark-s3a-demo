@@ -6,9 +6,11 @@ This repo is a proof of concept [Spark](https://spark.apache.org ) distribution 
 
 It uses
 
-* Ubuntu 18.04 base image with OpenJDK 8 and Python 3.6
+* OpenJDK 8 base image (debian-derived) and Python 3.6
 * Spark 2.4.5
-* Hadoop 3.1.3
+* Hadoop 2.9.2
+
+It is available in Docker Hub as: `drboyer/spark-s3a-demo:hadoop-2.9.2` or `drboyer/spark-s3a-demo:latest`
 
 ## Notes
 

@@ -3,9 +3,9 @@ FROM openjdk:8-jre-slim
 # aws_sdk_ver must match the version associated with hadoop-aws
 # You can check the package name/version by clicking the version of hadoop in use here:
 #     https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-aws
-ENV hadoop_ver 3.1.3
+ENV hadoop_ver 2.9.2
 ENV spark_ver 2.4.5
-ENV aws_sdk_ver 1.11.271
+ENV aws_sdk_ver 1.11.199
 
 ARG spark_uid=185
 
@@ -29,6 +29,7 @@ RUN cd /opt && \
     curl -l http://apache.mirrors.pair.com/spark/spark-${spark_ver}/spark-${spark_ver}-bin-without-hadoop.tgz | \
         tar -zx && \
     ln -s spark-${spark_ver}-bin-without-hadoop spark && \
+    chown -R ${spark_uid}:${spark_uid} spark-${spark_ver}-bin-without-hadoop && \
     mkdir -p /opt/spark/work-dir && \
     cp /opt/spark/kubernetes/dockerfiles/spark/entrypoint.sh /opt && \
     echo "Spark ${spark_ver} installed in /opt"
@@ -42,8 +43,12 @@ ADD log4j.properties /opt/spark/conf/log4j.properties
 ADD spark-env.sh /opt/spark/conf/spark-env.sh
 ADD spark-defaults.conf /opt/spark/conf/spark-defaults.conf
 ADD decom.sh /opt/decom.sh
+ADD entrypoint.patch /tmp/entrypoint.patch
+RUN cd /opt && \
+    patch -p0 < /tmp/entrypoint.patch && \
+    rm /tmp/entrypoint.patch
 
-# ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/jre/
+ENV HADOOP_HOME /opt/hadoop
 ENV SPARK_HOME /opt/spark
 ENV PATH $PATH:${SPARK_HOME}/bin
 ENV PYSPARK_DRIVER_PYTHON /usr/bin/python3
